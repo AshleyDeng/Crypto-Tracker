@@ -11,9 +11,7 @@ import UIKit
 // UI to show cryptos
 // MVVM
 
-
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
     
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
@@ -43,29 +41,31 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         APIClient.shared.getAllCryptoData(completion: { [weak self] result in
             switch result {
             case .success(let models):
-                self?.viewModels = models.compactMap({ model in
-                    let price = model.price_usd ?? 0
-                    let priceString = Self.numberFormatter.string(from: NSNumber(floatLiteral: Double(price)))
-                    
-                    let iconUrl = APIClient.shared.icons.filter({ icon in
-                        icon.asset_id == model.asset_id
-                    }).first?.url
-                    
-                    
-                    return CryptoTableViewCellViewModel(
-                        name: model.name ?? "N/A",
-                        symbol: model.asset_id,
-                        price: priceString ?? "N/A",
-                        iconUrl: iconUrl ?? ""
-                    )
-                })
-                
+                self?.prepareViewModels(models)
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
             case .failure(let error):
                 print(error)
             }
+        })
+    }
+    
+    private func prepareViewModels(_ models: [Crypto]) {
+        viewModels = models.compactMap({ model in
+            let price = model.price_usd ?? 0
+            let priceString = Self.numberFormatter.string(from: NSNumber(floatLiteral: Double(price)))
+            
+            let iconUrl = APIClient.shared.icons.filter({ icon in
+                icon.asset_id == model.asset_id
+            }).first?.url
+            
+            return CryptoTableViewCellViewModel(
+                name: model.name ?? "N/A",
+                symbol: model.asset_id,
+                price: priceString ?? "N/A",
+                iconUrl: iconUrl ?? ""
+            )
         })
     }
 
@@ -84,8 +84,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: CryptoTableViewCell.identifier,
-                for: indexPath
+            withIdentifier: CryptoTableViewCell.identifier,
+            for: indexPath
         ) as? CryptoTableViewCell else {
             return UITableViewCell()
         }

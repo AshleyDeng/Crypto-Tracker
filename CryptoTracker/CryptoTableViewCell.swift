@@ -20,7 +20,6 @@ class CryptoTableViewCellViewModel {
         self.price = price
         self.iconUrl = iconUrl
     }
-    
 }
 
 class CryptoTableViewCell: UITableViewCell {
@@ -110,9 +109,7 @@ class CryptoTableViewCell: UITableViewCell {
         nameLabel.text = nil
         symbolLabel.text = nil
         priceLabel.text = nil
-        
     }
-    
     
     // Configure
     func configure(with viewModel: CryptoTableViewCellViewModel) {
