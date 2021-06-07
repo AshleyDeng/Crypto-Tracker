@@ -34,7 +34,7 @@ final class APIClient {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+        URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data, error == nil else {
                 return
             }
@@ -48,9 +48,7 @@ final class APIClient {
             catch {
                 completion(.failure(error))
             }
-        }
-        
-        task.resume()
+        }.resume()
     }
     
     func getAllIcons() {
@@ -58,7 +56,7 @@ final class APIClient {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
             guard let data = data, error == nil else {
                 return
             }
@@ -72,9 +70,7 @@ final class APIClient {
             catch {
                 print(error)
             }
-        }
-        
-        task.resume()
+        }.resume()
     }
 }
 
